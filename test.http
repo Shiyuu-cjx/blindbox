@@ -1,0 +1,70 @@
+### 1. 登录管理员账号
+# 我们在 server.js 里创建的管理员账号是 admin / admin_password_123
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin_password_123"
+}
+
+### 2\. 登录普通用户账号
+
+# 这是我们最开始注册的 zhangsan 账号
+
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "username": "zhangsan",
+  "password": "password123"
+}
+
+### 创建新盲盒 (成功场景)
+POST http://localhost:5000/api/blindboxes
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "name": "奇幻森林系列",
+  "series": "自然系列",
+  "price": 79.00,
+  "image": "https://placehold.co/400x400/38A169/E2E8F0?text=奇幻森林"
+}
+
+### 抽取ID为1的盲盒
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ6aGFuZ3NhbiIsImlhdCI6MTc1MzE0OTExMCwiZXhwIjoxNzUzMTUyNzEwfQ.AQxEVdlPl30kUhJaHp90KMXF7KxNEOvF1h4yA6LvTsA
+
+{
+  "blindBoxId": 1
+}
+### 查看我的订单历史
+GET http://localhost:5000/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ6aGFuZ3NhbiIsImlhdCI6MTc1MzE0OTExMCwiZXhwIjoxNzUzMTUyNzEwfQ.AQxEVdlPl30kUhJaHp90KMXF7KxNEOvF1h4yA6LvTsA
+
+### 发布一个玩家秀帖子
+POST http://localhost:5000/api/shows
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ6aGFuZ3NhbiIsImlhdCI6MTc1MzE1MDQ2MywiZXhwIjoxNzUzMTU0MDYzfQ.ouDadt2Z0Qs388riuFWDgA-oHz9KpL2IUyCMDOVAVww
+
+{
+  "title": "开箱啦！抽到了太空漫游！",
+  "content": "手气太好了，一次就抽到了最想要的款式，开心！",
+  "image": "https://placehold.co/600x400/2D3748/FFFFFF?text=我的开箱图",
+  "orderId": 4
+}
+### 获取ID为1的系列详情（太空漫游）
+GET http://localhost:5000/api/blindboxes/1
+### 随机抽取一个“太空漫游”系列盲盒
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MzE4MDcyMSwiZXhwIjoxNzUzMTg0MzIxfQ.BaJYAb1xwU-FS33KazSpXeMGpiy3WTGRhVXeUIMXkPg
+
+{
+  "blindBoxId": 1
+}
+### 查看我的订单历史
+GET http://localhost:5000/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MzE4MDcyMSwiZXhwIjoxNzUzMTg0MzIxfQ.BaJYAb1xwU-FS33KazSpXeMGpiy3WTGRhVXeUIMXkPg
