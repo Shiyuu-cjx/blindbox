@@ -9,4 +9,5 @@ router.post('/', authMiddleware, showController.createShow);
 // 获取所有帖子列表 (公开)
 router.get('/', showController.getAllShows);
 
+router.delete('/:showId', authMiddleware, showController.deleteShow);
 module.exports = router;

@@ -1,38 +1,37 @@
-# 工作流的名称，会显示在 GitHub 的 Actions 页面上
+# 工作流的名称
 name: Node.js CI
 
-# 触发条件：
-# 当有代码被 push (推送) 到 main 分支时，或者
-# 当有 pull request (合并请求) 提交到 main 分支时，
-# 这个工作流就会自动运行。
+# 触发条件：当有代码 push 到 main 分支时运行
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-# 工作内容 (jobs)
+# 工作内容
 jobs:
-  # 我们定义一个名为 "build" 的工作
+  # 定义一个名为 "build" 的工作
   build:
-    # 指定这个工作运行在什么操作系统上，我们用最新的 Ubuntu
+    # 指定运行环境为最新的 Ubuntu 系统
     runs-on: ubuntu-latest
 
-    # 这个工作具体包含哪些步骤 (steps)
+    # 定义工作步骤
     steps:
-      # 第1步：从你的仓库把代码下载到临时的运行环境中
+      # 第一步：把你的代码从 GitHub 仓库下载到运行环境中
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 第2步：设置 Node.js 环境，并指定版本为 18.x
-      # 这能确保运行环境和你的开发环境尽可能一致
+      # 第二步：设置 Node.js 环境，并指定版本为 18.x
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
           node-version: "18.x"
-          cache: 'npm' # 缓存 npm 包，下次运行会更快
+          cache: 'npm'
 
-      # 第3步：运行 npm install 命令，安装项目的所有依赖
-      # 这是最关键的一步，如果能成功安装，说明你的项目配置是健康的
+      # 第三步：安装项目所有依赖
       - name: Install dependencies
         run: npm install
+
+      # 第四步：运行测试
+      - name: Run tests
+        run: npm test

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize =require('../config/database');
+const sequelize = require('../config/database');
 
 const User = sequelize.define('User', {
     id: {
@@ -16,11 +16,16 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    // --- 新增的字段 ---
     role: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'user' // 默认新注册的用户都是 'user' 角色
+        defaultValue: 'user'
+    },
+    // --- 新增的字段 ---
+    balance: {
+        type: DataTypes.DECIMAL(10, 2), // 和价格用同一种类型，保证精度
+        allowNull: false,
+        defaultValue: 9999.00 // 默认初始余额为 9999
     }
 });
 

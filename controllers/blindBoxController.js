@@ -1,13 +1,15 @@
-const { BlindBox, Item, Op } = require('../models'); // 引入 Item 模型和 Op
+const { BlindBox, Item } = require('../models');
+const { Op } = require('sequelize'); // 关键修正：Op 必须从 sequelize 直接引入
 
 // 获取所有盲盒系列列表（支持搜索）
 exports.getAllBlindBoxes = async (req, res) => {
     try {
         const { search } = req.query;
         let options = {
-            order: [['id', 'ASC']] // 按ID升序排列
+            order: [['id', 'ASC']]
         };
 
+        // 只有当 search 参数存在且不为空时，才添加 where 条件
         if (search) {
             options.where = {
                 name: {
@@ -19,36 +21,31 @@ exports.getAllBlindBoxes = async (req, res) => {
         const boxes = await BlindBox.findAll(options);
         res.status(200).json(boxes);
     } catch (error) {
+        console.error('搜索盲盒失败:', error);
         res.status(500).json({ message: '获取盲盒系列列表失败', error: error.message });
     }
 };
 
-// --- 这是核心改动 ---
-// 根据 ID 获取单个盲盒系列详情，并包含其下所有款式
+// 根据 ID 获取单个盲盒系列详情
 exports.getBlindBoxById = async (req, res) => {
     try {
         const { id } = req.params;
         const box = await BlindBox.findByPk(id, {
-            // 使用 include 来同时加载关联的所有 Item (款式)
-            include: [{
-                model: Item,
-                // 为了保护隐藏款的神秘感，我们不直接显示 isSecret 字段
-                attributes: ['id', 'name', 'image', 'description']
-            }]
+            include: [Item]
         });
 
         if (!box) {
             return res.status(404).json({ message: '找不到指定的盲盒系列' });
         }
-
         res.status(200).json(box);
     } catch (error) {
+        console.error('获取盲盒详情失败:', error);
         res.status(500).json({ message: '获取盲盒系列详情失败', error: error.message });
     }
 };
 
 
-// --- 管理员功能保持不变，因为它们操作的是“系列”本身 ---
+// --- 管理员功能 ---
 
 // 创建新盲盒系列
 exports.createBlindBox = async (req, res) => {
