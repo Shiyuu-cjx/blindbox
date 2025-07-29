@@ -33,6 +33,23 @@ const startServer = async () => {
         await sequelize.sync();
         console.log('🔄 数据库表结构已同步.');
 
+        // --- 新增：创建管理员账号 ---
+        try {
+            const adminPassword = 'Shiyuu'; // 这是一个示例密码
+            const hashedPassword = await bcrypt.hash(adminPassword, 10);
+            await User.findOrCreate({
+                where: { username: 'Shiyuu' },
+                defaults: {
+                    username: 'Shiyuu',
+                    password: hashedPassword,
+                    role: 'admin'
+                }
+            });
+            console.log('👑 管理员用户(Shiyuu)已成功添加或确认存在.');
+        } catch (error) {
+            console.error('❌ 添加管理员用户失败:', error);
+        }
+
         // 只有在非测试环境下才监听端口
         if (process.env.NODE_ENV !== 'test') {
             app.listen(PORT, () => {
