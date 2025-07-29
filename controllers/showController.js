@@ -50,20 +50,32 @@ exports.createShow = async (req, res) => {
 // 获取所有帖子列表 (保持不变)
 exports.getAllShows = async (req, res) => {
     try {
-        const shows = await Show.findAll({
+        const { search } = req.query; // 2. 获取 URL 中的 search 参数
+
+        const findOptions = {
             order: [['createdAt', 'DESC']],
             include: [
                 { model: User, attributes: ['id', 'username'] },
                 { model: Order, include: [{ model: Item, include: [BlindBox] }] },
                 { model: Comment, include: [{ model: User, attributes: ['username'] }] }
             ]
-        });
+        };
+
+        // 如果有搜索词，则添加 where 条件进行模糊查询
+        if (search) {
+            findOptions.where = {
+                title: {
+                    [Op.like]: `%${search}%`
+                }
+            };
+        }
+
+        const shows = await Show.findAll(findOptions);
         res.status(200).json(shows);
     } catch (error) {
         res.status(500).json({ message: '获取帖子列表失败', error: error.message });
     }
 };
-
 // 删除帖子 (保持不变)
 exports.deleteShow = async (req, res) => {
     try {
