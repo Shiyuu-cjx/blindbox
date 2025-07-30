@@ -12,7 +12,27 @@ const commentRoutes = require('./routes/comments');
 const app = express();
 const PORT = 5000;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+const corsOptions = {
+
+origin: function (origin, callback) {
+
+// 允许没有 origin 的请求 (比如 Postman) 或所有来自 localhost 的请求
+
+if (!origin || origin.startsWith('http://localhost')) {
+
+callback(null, true);
+
+} else {
+
+callback(new Error('Not allowed by CORS'));
+
+}
+
+}
+
+};
+
+app.use(cors(corsOptions));
 app.use(express.static('public'));
 app.use(express.json());
 app.use('/api/users', userRoutes);
